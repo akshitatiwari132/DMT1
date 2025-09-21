@@ -97,10 +97,11 @@ theorem proofAndCommutes : andCommutes :=
         )
       )
       -- right conjunct: Q ∧ P → P ∧ Q
-      (
-        sorry     -- ok, Lean, trust me (acceot as axiom)
+      (fun h : Q ∧ P =>             -- now we switch
+        (
+          And.intro h.right h.left  -- derive proof of of P ∧ Q (basically just reverse thing)
+        )
       )
-
 
 -- Here is the same proof using shorthand notation
 theorem proofAndCommutes' :
@@ -243,7 +244,13 @@ theorem proofAndAssoc : P ∧ (Q ∧ R) ↔ (P ∧ Q) ∧ R :=
   (
     fun
     (h : (P ∧ Q) ∧ R) =>
-    (
-      sorry
+    by (
+      let r := h.right           -- now we want to reverse break down
+      let p := h.left.left
+      let q := h.left.right
+
+      let qr := And.intro q r -- we have to do the other side first
+      exact (And.intro p qr) -- combine
+
     )
   )
