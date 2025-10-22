@@ -28,8 +28,7 @@ squared.
 @@@ -/
 
 def square : Nat → Nat :=
-  sorry
-
+  fun x => x * x -- create a func def where we have x^2 (mult by itself)
 /- @@@
 #1 [5 points].
 
@@ -62,7 +61,9 @@ square.
 @@@ -/
 
 def square' : Nat → Nat :=
-λ y => y^2
+fun y => y^2 -- original solution had λ, im used to using fun tho, is that ok?
+
+#eval square' 4 -- added eval statement to check
 
 /- @@@
 #4 [5 points].
@@ -71,7 +72,7 @@ Under what specific circumstance would
 it be wrong to use α (alpha) conversion
 to rename an argument, *x*, to *y*? Why?
 
-Answer here:
+Answer here: as long as y isn't already there, we are fine. otherwise confusing
 
 ANSWER: If the variable *y* already has
 a meaning in the application term. The new
@@ -89,7 +90,7 @@ and 3.
 
 -- the function
 def add : Nat → Nat → Nat
-| n1, n2 => n1 + n2
+| n1, n2 => n1 + n2 -- what is significance of |? i know we have to use it (appears in class too), but not sure why
 
 -- an application
 #eval add 2 3
@@ -104,7 +105,7 @@ syntax that we've used to define *add*.
 @@@ -/
 
 def prAdd : Nat → Nat
-| n2 => 2 + n2
+| n2 => 2 + n2 -- one beta reduction means tot he first term only
 
 /- @@@
 #5 [5 points].
@@ -117,7 +118,9 @@ replacing the *sorry* with your answer.
 def M : Nat → Nat → Nat := fun x y => x * y
 
 def M' : Nat → Nat :=
-  sorry
+  fun y => 2 * y -- initially had fun x y, but realized x is no longer parameter
+
+#eval M' 4 --quick check
 
 /- @@@
 #6 [10 points].
@@ -153,7 +156,7 @@ replaced with a lambda abstraction for Nat multiplication.
 def apply : (Nat → Nat → Nat) → Nat → Nat → Nat
 | f, x, y => f x y
 
-#eval apply (fun x y => x * y) 2 3
+#eval apply (fun x y => x * y) 2 3 -- lambda abstraction when we then give arguments
 
 /- @@@
 #8 [10 points]
@@ -167,8 +170,7 @@ a few different inputs.
 @@@ -/
 
 def addNfn : Nat → (Nat → Nat)
-| n => λ m => n + m
-
+| n => fun m => n + m -- same issue where orig solution had λ, is this ok?
 def add3 := addNfn 3
 
 #eval add3 0
@@ -192,7 +194,7 @@ where _ is a Type value, such as Nat or Bool. What
 is the type of this function? Hint: #check (idType).
 Include the parentheses.
 
-Answer here:
+Answer here: type valur will result in type
 
 ANSWER: Type → Type
 @@@ -/
@@ -203,7 +205,7 @@ def idType (α : Type) : Type := α
 #reduce (types := true) idType String
 #reduce (types := true) idType Bool
 
-#check (idType)
+#check (idType) -- showing type will go to type always
 
 /- @@@
 #10 [5 points]
@@ -216,12 +218,12 @@ different Type values (Nat, String, Bool) for α.
 
 What's the type of this function?
 
-Answer:
+Answer: input is of α, so thats the type, value of that type
 
 ANSWER: (α : Type) → α → α
 @@@ -/
 
-def idPoly (α : Type) (a : α) := a
+def idPoly (α : Type) (a : α) := a -- itll just give us what we put in
 
 #eval idPoly Nat 3
 #eval idPoly Bool true
@@ -242,7 +244,7 @@ inferred by Lean. Use *#check idPoly'* to see
 the answer to this question: What is the type
 of this function, written using → notation?
 
-Answer here:
+Answer here: itll also be α but i dont explicitly have to say type
 
 ANSWER: (α : Type) → α → α
 
@@ -251,6 +253,15 @@ ANSWER: (α : Type) → α → α
 def idPoly' {α : Type} (a : α) := a
 
 #check idPoly'
+
+#eval idPoly' 3
+-- did testing to figure out that its implicitly done, initially was confused
+-- about what the difference is between the two
+#eval idPoly Nat 3
+
+
+
+
 
 /- @@@
 ## Part II: Untyped Lambda Calculus
@@ -297,7 +308,7 @@ replace the name of any unused argument with _.
 @@@ -/
 
 def fTrue : Nat → Nat → Nat
-| n1, _  => n1  -- complete the definition
+| n1, _  => n1  -- complete the definition, is it not complete?
 
 /- @@@
 #13 [5 points]
@@ -308,7 +319,7 @@ the second argument, which is to say *n2*.
 @@@ -/
 
 def fFalse : Nat → Nat → Nat
-| _, n2  => n2
+| _, n2  => n2 -- returns the second argument
 
 
 /- @@@
@@ -324,11 +335,11 @@ the #eval statements should evaluate to 5 and
 4, respectively.
 @@@ -/
 
-def ifThenElse : fBool → Nat → Nat → Nat
-| b, n1, n2 => b n1 n2
+def ifThenElse : fBool → Nat → Nat → Nat -- fBool, Nat, Nat taken in to return Nat
+| b, n1, n2 => b n1 n2 -- for arguments (b : fBool), (n1 : Nat), (n2 : Nat), apply b, so if true then n1 otherwise n2
 
-#eval ifThenElse fTrue (2 + 3) 4
-#eval ifThenElse fFalse (2 + 3) 4
+#eval ifThenElse fTrue (2 + 3) 4 -- does 2 + 3
+#eval ifThenElse fFalse (2 + 3) 4 -- does 4
 
 
 /- @@@
@@ -389,7 +400,13 @@ the values to return on the true and false branches,
 respectively.
 @@@ -/
 
--- Answer here
+def ifThenElsePoly {α : Type} (b : Bool) (x y : α) : α := -- need a type parameter first
+-- then we have b as Bool because decision point, then branches (x and y of type a)
+-- return type α
+  if b then x else y
+  -- if else statement comes here
+
+#eval ifThenElsePoly true 4 5
 
 
 /- @@@

@@ -316,7 +316,18 @@ It finally returns the second argument without
 any change.
 @@@ -/
 
+def identNat : Nat → Nat
+| n => n
+
+
+#eval (identNat 5)
+
+def identBool (b : Bool) := b
+
+#eval (identBool true)
+
 def ident (α : Type) (a : α) := a
+
 
 /- @@@
 You could even say that, for any type, α,
@@ -467,5 +478,28 @@ still hasn't matched, Lean will tell you there are
 *missing cases.
 -/
 
-def idBool : Bool → Bool
-| true => true
+-- def idBool : Bool → Bool
+-- | true => true
+
+
+-- SUPER IMPORTNAT
+
+-- NEED string stuff from class, not in my doc for some reason, which is why errors are there
+
+
+def compose {α β γ : Type} (f : α → β) (g : β → γ) :=
+  fun a => g (f a)
+
+def isEvLenStr' : String → Bool : compose String.length isEven
+#eval isEvLenStr'
+
+#check Function.comp
+-- this is function composition
+
+#eval compose String.length isEven "Hello"
+
+def isEvenLengthString := compose String.length isEven
+
+#eval isEvenLengthString "Hello!"
+#eval isEvenLengthString "Hello!!"
+#eval isEvenLengthString "Hello!!!!"

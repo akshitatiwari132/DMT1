@@ -104,3 +104,12 @@ with a proof of *R → W* being a function then when applied
 to a proof that it's raining yields a proof the ground is
 wet.
 @@@ -/
+
+-- (pq : P → Q) (p : P)
+----------- → -elim
+--    ( : Q)
+
+-- miss3d the part above below, need to fill it in
+
+theorem slippy : Slippy := (impTrans rainwet wetSlippy)
+
